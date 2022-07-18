@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: node-deployment
+  labels:
+    app: nodealpine
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nodealpine
+  template:
+    metadata:
+      labels:
+        app: nodealpine
+    spec:
+      imagePullSecrets:
+      - name: nodepass
+      containers:
+      - name: nodealpine
+        image: 255757214348.dkr.ecr.us-east-1.amazonaws.com/bar:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 4000
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: node-service
+spec:
+  selector:
+    app: nodealpine
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 4000
+  type: LoadBalancer
